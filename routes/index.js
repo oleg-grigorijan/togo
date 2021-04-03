@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     res.render('index', {
-        title: 'Express',
+        title: 'ToGO',
         tasks: [
             {
                 id: 'id1',
