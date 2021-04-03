@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  div.container
+    ul.list-group
+        for task in tasks
+          li.list-group-item
+            div.form-check
+              input.form-check-input(type='checkbox', checked=task.isDone)
+              label.form-check-label #{task.name}
