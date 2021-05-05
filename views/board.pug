@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  .container
+    nav
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href="/boards") Boards
+        li.breadcrumb-item.active #{board.title}
+    .card.card-body.mb-3
+      form(method="post" action=`/boards/${board.id}/tasks` enctype="multipart/form-data")
+        input.form-control.mb-2(name="title" type="text" required placeholder="New task")
+        .d-flex
+          .input-group.mr-2
+            .input-group-text
+              input.form-check-input.mt-0(name="hasDeadline" type="checkbox")
+              label.form-check-label Deadline
+            input.form-control(name="deadline" type="date" value=`${new Date().toISOString().substr(0, 10)}`)
+          input.form-control(name="attachments" type="file" multiple)
+          button.btn.btn-outline-primary(type="submit") Create
+
+
+    ul.list-group
+        for task in board.tasks
+          li.list-group-item.d-flex.justify-content-between
+            form.form-check(method="post" action=`/boards/${board.id}/tasks/${task.id}`)
+              input.form-check-input(
+                id=`task-${task.id}`
+                type="checkbox"
+                name="isCompleted"
+                checked=task.isCompleted
+                onChange="this.form.submit()"
+              )
+              .form-check-label
+                label(class={"text-decoration-line-through": task.isCompleted} for=`task-${task.id}`) #{task.title}
+                if task.deadline
+                  span.small.text-muted.d-block Until #{task.deadline.toDateString()}
+                if task.attachments.length
+                  ul.d-flex.flex-wrap.list-unstyled
+                      for attachment in task.attachments
+                        li.m-1
+                          a.text-decoration-none(href=`/static/uploads/${attachment.fileName}`)
+                            if attachment.mimeType.startsWith('image')
+                              img.border.rounded(src=`/static/uploads/${attachment.fileName}` style="width:30px;height:30px")
+                            else
+                              .px-2.border.rounded(style="height:30px;overflow:auto")
+                                i.far.fa-file
+                                span #{attachment.originalFileName}
+            form.form-check(method="post" action=`/boards/${board.id}/tasks/${task.id}/remove`)
+              button.btn.btn-link.far.fa-trash-alt.text-danger(type="submit")

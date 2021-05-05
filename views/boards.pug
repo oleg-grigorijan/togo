@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  .container
+    nav
+      ol.breadcrumb
+        li.breadcrumb-item.active Boards
+
+    form(method="post" action="/boards")
+      .input-group.mb-3
+        input.form-control(name="title" type="text" required placeholder="New board")
+        button.btn.btn-outline-primary(type="submit") Create
+
+    .list-group
+        for board in boards
+          .list-group-item.d-flex.justify-content-between
+            a.text-decoration-none(href=`/boards/${board.id}`) #{board.title}
+            form.form-check(method="post" action=`/boards/${board.id}/remove`)
+              button.btn.btn-link.far.fa-trash-alt.text-danger(type="submit")
